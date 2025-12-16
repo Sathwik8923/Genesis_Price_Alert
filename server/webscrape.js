@@ -20,7 +20,10 @@ const scrapeProduct = async (name) => {
 
     await page.waitForSelector('div[data-component-type="s-search-result"]');
 
-    const product = await page.evaluate(() => {
+    const products = await page.evaluate(() => {
+
+        const results = [];
+
         const productDetails = document.querySelectorAll('div[data-component-type="s-search-result"]');
 
 
@@ -61,16 +64,17 @@ const scrapeProduct = async (name) => {
                 }
             }
 
-            return { title, price, image, link }
+            results.push({ title, price, image, link });
+            if(results.length==3){break;}
         }
-        return null;
+        return results;
     })
 
     // await page.screenshot({path : "example.png"});
 
     await browser.close();
 
-    return product;
+    return products;
 }
 
 module.exports = scrapeProduct;
