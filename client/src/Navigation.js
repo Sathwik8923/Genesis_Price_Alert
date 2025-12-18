@@ -30,5 +30,4 @@ const Navigation = () => {
     </Navbar>
      );
 }
- 
 export default Navigation;

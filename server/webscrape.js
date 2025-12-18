@@ -16,8 +16,6 @@ const scrapeProduct = async (name) => {
         waitUntil: 'networkidle2'
     });
 
-
-
     await page.waitForSelector('div[data-component-type="s-search-result"]');
 
     const products = await page.evaluate(() => {
