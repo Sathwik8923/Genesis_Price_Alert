@@ -1,21 +1,19 @@
+require('dotenv').config();
 const express = require('express');
 const scrapeProduct = require('./webscrape');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const connectDB = require('./db');
-const User = require('./models/User');
 const authMiddleware = require('./middleware/auth')
 const Products = require('./models/Products');
 const Trackedproducts = require('./models/Trackedproducts');
-
+const { signup, login }=require('./Controllers/AuthController');
+const { signupValidation, loginValidation } = require('./middleware/Validation');
+const cors = require('cors');
 const app = express();
 
 connectDB();
 
 app.use(express.json());
-
-const JWT_SECRET = "supersecretkey";
-
+app.use(cors());
 app.post("/search", async (req, res) => {
     try {
         console.log(req.body.name);
@@ -27,55 +25,9 @@ app.post("/search", async (req, res) => {
         res.status(500).json({ error: "Scraping failed" });
     }
 })
+app.post("/signup",signupValidation, signup);
 
-app.post("/signup", async (req, res) => {
-    try {
-        const { name, email, password } = req.body;
-        const existingUser = await User.findOne({ email:email })
-        if (existingUser) {
-            return res.status(400).json({ message: "User Already Exists" })
-        }
-        const hashedpassword = await bcrypt.hash(password, 10);
-        const newuser = new User({
-            name,
-            email,
-            password: hashedpassword
-        })
-        await newuser.save();
-        res.status(201).json({ message: "User created successfully" });
-    }
-    catch (err) {
-        console.log(err)
-        res.status(500).json({ message: "Signup failed" });
-    }
-})
-
-app.post("/login", async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const existinguser = await User.findOne({ email })
-        if (!existinguser) {
-            return res.status(400).json({message : "User Not Found"})
-        }
-        const match = await bcrypt.compare(password, existinguser.password)
-        if (!match) {
-            return res.status(400).json({message : "Invalid Password"})
-        }
-        const token = jwt.sign(
-            {userId : existinguser._id},
-            JWT_SECRET,
-            {expiresIn : "7d"}
-        )
-        console.log("Login Successful")
-        res.status(200).json({
-            message:"Login Successful",
-            token
-        })
-    }
-    catch (err) {
-        console.log(err);
-    }
-})
+app.post("/login",loginValidation , login);
 
 app.post("/track", authMiddleware ,async (req, res) => {
     try {
@@ -120,4 +72,4 @@ app.post("/track", authMiddleware ,async (req, res) => {
     }
 })
 
-app.listen(8000);
+app.listen(8000,() => console.log("Server running on 8000"));

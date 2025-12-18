@@ -19,8 +19,6 @@ const Searching = () => {
         setIsPending(false);
     }
     const handleTrack = async (detail)=>{
-
-
         const token = localStorage.getItem("token");
 
         if(!token){
