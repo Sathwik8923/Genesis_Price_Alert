@@ -4,7 +4,11 @@ const scrapeProduct = async (name) => {
     console.log("Scraping for:", name);
     const browser = await puppeteer.launch({
         headless: false,
-        defaultViewport: false
+        defaultViewport: false,
+        args: [
+    '--disable-geolocation',
+    '--disable-notifications'
+  ]
     });
     const page = await browser.newPage();
 
@@ -24,6 +28,10 @@ const scrapeProduct = async (name) => {
 
         const productDetails = document.querySelectorAll('div[data-component-type="s-search-result"]');
 
+
+        const getPriceNumber = (price) => {
+            return Number(price.replace(/[^0-9]/g, ""));
+        };
 
         for (const productDetail of productDetails) {
             if (productDetail.textContent.includes("Sponsored")) { continue; }
@@ -62,8 +70,10 @@ const scrapeProduct = async (name) => {
                 }
             }
 
+            price = getPriceNumber(price);
+
             results.push({ title, price, image, link });
-            if(results.length==3){break;}
+            if (results.length == 3) { break; }
         }
         return results;
     })
