@@ -32,7 +32,6 @@ const Tracked = () => {
     return (
         <div>
             {isPending && <div>Loading...</div>}
-
             {details.map((detail, index) => (
                 <div key={index}>
                     <div>Product Name:{detail.pid.pname}</div>

@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+.auth-container {
+  /* Using fixed ensures it pins to the browser window, not the parent div */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  background-color: #0f172a;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.1) 0px, transparent 50%);
+  
+  
+  background-size: cover;
+  background-attachment: fixed;
+  
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  padding: 24px;
+  overflow-y: auto; 
+}
+.auth-card {
+  
+  background: rgba(255, 255, 255, 0.85); 
+  
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
+  
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 28px;
+  width: 100%;
+  max-width: 500px;
+  padding: 56px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.auth-header h1 {
+  color: #1e293b;
+  font-size: 34px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  letter-spacing: -0.8px;
+}
+
+.brand-accent {
+  color: #059669; /* Slightly deeper emerald for contrast on glass */
+}
+
+.auth-header p {
+  color: #475569;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Form Layout */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.auth-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.auth-input-group label {
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.auth-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.auth-input-wrapper input {
+  width: 100%;
+  background: rgba(241, 245, 249, 0.6);
+  border: 2px solid rgba(226, 232, 240, 0.8);
+  border-radius: 14px;
+  padding: 16px 50px 16px 45px; /* Increased left padding from 20px to 45px */
+  color: #0f172a;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+.auth-input-icon {
+  position: absolute;
+  left: 18px; /* Positioned on the left */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b; /* Slate color to match label theme */
+  font-size: 16px;
+  pointer-events: none; /* Icon shouldn't block clicking the input */
+  z-index: 2;
+}
+.auth-toggle-icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px; /* Slightly adjusted size */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+.auth-toggle-icon:hover {
+  opacity: 1;
+  color: #059669; /* Change to brand green on hover */
+}
+
+/* Price Comparison Theme Button */
+.auth-submit-btn {
+  margin-top: 10px;
+  background: #1e293b;
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  padding: 18px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-submit-btn:hover {
+  background: #0f172a;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.auth-footer {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 15px;
+  color: #475569;
+}
+
+.auth-link {
+  color: #059669;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+/* Mobile responsive */
+@media (max-width: 540px) {
+  .auth-card {
+    padding: 40px 24px;
+    border-radius: 0;
+    backdrop-filter: none; /* Better performance on mobile */
+    background: #ffffff;
+  }
+}
