@@ -1,7 +1,16 @@
-const puppeteer = require('puppeteer')
+// const puppeteer = require('puppeteer')
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker');
 
 const scrapeProduct = async (name) => {
     console.log("Scraping for:", name);
+
+    puppeteer.use(StealthPlugin())
+
+    puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
+
+
     const browser = await puppeteer.launch({
         headless: false,
         defaultViewport: false,
@@ -11,10 +20,6 @@ const scrapeProduct = async (name) => {
   ]
     });
     const page = await browser.newPage();
-
-    await page.setUserAgent(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
-    );
 
     await page.goto(`https://www.amazon.in/s?k=${name}`, {
         waitUntil: 'networkidle2'
@@ -72,7 +77,7 @@ const scrapeProduct = async (name) => {
 
             price = getPriceNumber(price);
 
-            results.push({ title, price, image, link });
+            results.push({ title, price, image, link ,website : "Amazon"});
             if (results.length == 3) { break; }
         }
         return results;

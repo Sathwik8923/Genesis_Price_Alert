@@ -55,6 +55,7 @@ const Searching = () => {
                     <div>Product Name:{detail.title}</div>
                     <div>Product Price:{detail.price}</div>
                     <img src={detail.image} width="200" alt={detail.title}/>
+                    <div>Website:{detail.website}</div>
                     <a href={detail.link} target="_blank" rel="noreferrer">Buy Now</a>
                     <button onClick={()=>{handleTrack(detail)}}>Track</button>
                 </div>

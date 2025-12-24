@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const scrapeProduct = require('./webscrape');
 const scrapingcroma = require('./scrapings/scrape_croma');
+const scrapingflipkart = require('./scrapings/scrape_flipcart');
 const connectDB = require('./db');
 const authMiddleware = require('./middleware/auth')
 const Products = require('./models/Products');
@@ -20,7 +21,8 @@ app.post("/search", async (req, res) => {
         console.log(req.body.name);
         const data_a = await scrapeProduct(req.body.name);
         const data_c = await scrapingcroma(req.body.name);
-        const data = [...data_a,...data_c];
+        const data_f = await scrapingflipkart(req.body.name);
+        const data = [...data_a,...data_c,...data_f];
         data.sort((a,b)=>a.price-b.price);
         res.status(200).json(data);
     }
@@ -33,19 +35,18 @@ app.post("/signup", signupValidation, signup);
 
 app.post("/login", loginValidation, login);
 
-
 app.post("/track", authMiddleware, async (req, res) => {
     try {
-        console.log("REQ BODY 👉", req.body);
         const pname = req.body.detail.title
         const purl = req.body.detail.link
         const imageurl = req.body.detail.image
         const currentprice = req.body.detail.price;
+        const provider = req.body.detail.website;
         const userId = req.user.userId;
         let existingproduct = await Products.findOne({ purl });
         if (!existingproduct) {
             existingproduct = new Products({
-                pname, purl, imageurl, currentprice, lastcheckedAt: new Date()
+                pname, purl, imageurl, currentprice, website : provider,lastcheckedAt: new Date()
             });
 
             await existingproduct.save();
@@ -64,6 +65,7 @@ app.post("/track", authMiddleware, async (req, res) => {
             uid: userId,
             pid: existingproduct._id,
             tprice: currentprice,
+            website : provider,
             lastNotifiedPrice: currentprice,
             isActive: true
         })
