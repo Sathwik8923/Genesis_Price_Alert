@@ -1,15 +1,14 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { handleError, handleSuccess } from '../utils';
+import '../styles/Authentication.css';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 function Login() {
-
-    const [loginInfo, setLoginInfo] = useState({
-        email: '',
-        password: ''
-    })
-
+    const [loginInfo, setLoginInfo] = useState({ email: '', password: '' });
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -19,7 +18,6 @@ function Login() {
         copyLoginInfo[name] = value;
         setLoginInfo(copyLoginInfo);
     }
-
     const handleLogin = async (e) => {
         e.preventDefault();
         const { email, password } = loginInfo;
@@ -54,38 +52,55 @@ function Login() {
             handleError(err);
         }
     }
-
     return (
-        <div className='container'>
-            <h1>Login</h1>
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label htmlFor='email'>Email</label>
-                    <input
-                        onChange={handleChange}
-                        type='email'
-                        name='email'
-                        placeholder='Enter your email...'
-                        value={loginInfo.email}
-                    />
+        <div className="auth-container">
+            <div className="auth-card">
+                <div className="auth-header">
+                    <h1>Welcome to <span className="brand-accent">DealHunt</span></h1>
+                    <p>Login to see the lowest prices from 50+ stores.</p>
                 </div>
-                <div>
-                    <label htmlFor='password'>Password</label>
-                    <input
-                        onChange={handleChange}
-                        type='password'
-                        name='password'
-                        placeholder='Enter your password...'
-                        value={loginInfo.password}
-                    />
-                </div>
-                <button type='submit'>Login</button>
-                <span>Does't have an account ?
-                    <Link to="/signup">Signup</Link>
-                </span>
-            </form>
-            <ToastContainer />
+                <form className="auth-form" onSubmit={handleLogin}>
+                    <div className="auth-input-group">
+                        <label>Email Address</label>
+                        <div className="auth-input-wrapper">
+                            <FontAwesomeIcon icon={faEnvelope} className="auth-input-icon" />
+                            <input
+                                onChange={handleChange}
+                                type='email'
+                                name='email'
+                                placeholder='name@company.com'
+                                value={loginInfo.email}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="auth-input-group">
+                        <label>Password</label>
+                        <div className="auth-input-wrapper">
+                            <FontAwesomeIcon icon={faLock} className="auth-input-icon" />
+                            <input
+                                onChange={handleChange}
+                                type={showPassword ? 'text' : 'password'}
+                                name='password'
+                                placeholder='••••••••'
+                                value={loginInfo.password}
+                            />
+                            <span className="auth-toggle-icon" onClick={() => setShowPassword(!showPassword)}>
+                                <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+                            </span>
+                        </div>
+                    </div>
+
+                    <button className="auth-submit-btn" type="submit">Log In</button>
+
+                    <p className="auth-footer">
+                        Don't have an account? <Link to="/signup" className="auth-link">Sign Up</Link>
+                    </p>
+                </form>
+                <ToastContainer />
+            </div>
         </div>
-    )
+    );
 }
-export default Login
+
+export default Login;

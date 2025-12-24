@@ -1,0 +1,468 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --primary-green: #10b981;
+  --primary-dark: #0f172a;
+  --slate-600: #475569;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+}
+
+.dh-main-wrapper {
+  width: 100vw;
+  margin:0;
+  padding:0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.dh-main-wrapper main {
+  flex: 1;
+  margin-top: 80px;
+   /* Slight gap between navbar and hero */
+}
+/* --- NAVIGATION --- */
+.dh-navbar {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding: 15px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 80px; 
+  box-sizing: border-box;
+}
+
+.dh-logo {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--primary-dark);
+  text-decoration: none;
+}
+
+.dh-logo span { color: var(--primary-green); }
+
+.dh-nav-links {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.dh-profile-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 5px 15px;
+  border-radius: 50px;
+  background: rgba(16, 185, 129, 0.1);
+  transition: all 0.2s;
+}
+
+.dh-profile-section:hover { background: rgba(16, 185, 129, 0.2); }
+
+.dh-avatar {
+  width: 35px;
+  height: 35px;
+  background: var(--primary-green);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.dh-auth-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.dh-btn-login { color: var(--primary-dark); }
+.dh-btn-signup { background: var(--primary-green); color: white; }
+
+/* --- HERO & SEARCH --- */
+.dh-hero {
+  padding: 60px 5% 80px;
+  text-align: center;
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+}
+
+.dh-search-box {
+  max-width: 700px;
+  margin: 40px auto;
+  display: flex;
+  gap: 10px;
+  background: white;
+  padding: 10px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.dh-search-box input {
+  flex: 1;
+  border: none;
+  padding: 15px 20px;
+  font-size: 16px;
+  outline: none;
+}
+
+.dh-search-btn {
+  background: var(--primary-dark);
+  color: white;
+  border: none;
+  padding: 0 30px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* --- PRODUCT CARDS --- */
+.dh-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  padding: 40px 5%;
+  scroll-margin-top: 100px;
+
+}
+
+.dh-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.3s;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.dh-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+
+.dh-card-img {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  padding: 20px;
+  background: #f8fafc;
+}
+
+.dh-card-content { padding: 20px; flex-grow: 1; }
+
+.dh-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dh-card-price {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--primary-green);
+}
+
+.dh-card-actions {
+  display: flex;
+  gap: 10px;
+  padding: 20px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.dh-btn-buy {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  background: #f1f5f9;
+  color: var(--primary-dark);
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.dh-btn-track {
+  flex: 1;
+  background: var(--primary-green);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* --- FOOTER --- */
+.dh-footer {
+  margin-top: auto;
+  background: var(--primary-dark);
+  color: white;
+  padding: 60px 5% 30px;
+}
+
+.dh-footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.dh-footer-bottom {
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 20px;
+  font-size: 14px;
+  color: #94a3b8;
+}
+/* --- PROFILE SIDEBAR (RIGHT STICKY) --- */
+.dh-profile-sidebar {
+  position: fixed;
+  top: 0;
+  right: -400px; /* Hidden by default */
+  width: 350px;
+  height: 100vh;
+  background: white;
+  z-index: 2000;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+  transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.dh-profile-sidebar.open {
+  right: 0; /* Slide in */
+}
+
+.dh-sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1999;
+}
+
+.dh-sidebar-header {
+  padding: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.dh-sidebar-header h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.dh-close-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: var(--slate-600);
+}
+
+.dh-sidebar-content {
+  padding: 40px 30px;
+  flex: 1;
+  text-align: center;
+}
+
+.dh-large-avatar {
+  width: 80px;
+  height: 80px;
+  background: var(--primary-green);
+  color: white;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 800;
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+}
+
+.dh-user-info-section {
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.dh-user-info-section label {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #94a3b8;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.dh-user-info-section p {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin-bottom: 20px;
+}
+
+.dh-status-badge {
+  display: inline-block;
+  background: #ecfdf5;
+  color: #059669;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px !important;
+}
+
+.dh-sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dh-menu-item {
+  text-align: left;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #f1f5f9;
+  background: white;
+  font-weight: 600;
+  color: var(--slate-600);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dh-menu-item:hover {
+  background: #f8fafc;
+  border-color: var(--primary-green);
+  color: var(--primary-green);
+}
+
+.dh-sidebar-footer {
+  padding: 30px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.dh-logout-btn {
+  width: 100%;
+  padding: 15px;
+  background: #fff1f2;
+  color: #e11d48;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dh-logout-btn:hover {
+  background: #ffe4e6;
+  transform: translateY(-2px);
+}
+/* Ensure the profile trigger feels clickable */
+.dh-profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer; /* Critical change */
+  padding: 6px 14px;
+  border-radius: 50px;
+  background: rgba(16, 185, 129, 0.05);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  border: 1px solid transparent;
+}
+
+.dh-profile-trigger:hover {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.2);
+  transform: translateY(-1px);
+}
+
+.dh-profile-trigger:active {
+  transform: translateY(0px);
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.dh-avatar {
+  width: 38px;
+  height: 38px;
+  background: var(--primary-green);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+  transition: box-shadow 0.2s ease;
+}
+
+.dh-profile-trigger:hover .dh-avatar {
+  box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+}
+
+.dh-user-name {
+  font-weight: 700;
+  color: var(--primary-dark);
+  font-size: 15px;
+}
+/* --- TRACKED PRODUCTS NAV ITEM --- */
+/* --- TRACKED PRODUCTS NAV ITEM --- */
+.dh-nav-item {
+  text-decoration: none;
+  color: var(--slate-600);
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Increased gap slightly for larger icon */
+}
+
+.dh-nav-item:hover {
+  color: var(--primary-green);
+}
+
+/* Updated styling for the wishlist icon */
+.dh-wishlist-icon {
+  /* Changed from Red to a vibrant Amber/Gold color */
+  color:black; 
+  /* font-size acts as a multiplier for the 'size' prop in FontAwesome */
+  font-size: 1.2rem; 
+  transition: transform 0.2s;
+}
+
+.dh-nav-item:hover .dh-wishlist-icon {
+  transform: scale(1.1);
+  color: #d97706; /* Slightly darker gold on hover */
+}
+
+.dh-wishlist-link {
+  margin-right: 15px;
+}
+/* Container takes full width to match the hero content */
+.dh-search-container {
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+/* Force the search box to keep its original behavior */
+.dh-search-box {
+    width: 100% !important;
+    display: flex;
+}
+
