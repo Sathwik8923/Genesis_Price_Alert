@@ -10,7 +10,7 @@ const Searching = () => {
 
     const handleClick = async () => {
         if (!name.trim()) {
-            setErrorMsg('Please enter something to search');
+            setErrorMsg('Please enter something to search!');
             return;
         }
 
@@ -75,7 +75,7 @@ const Searching = () => {
         <div className="dh-hero">
             <h1>Find the <span className="brand-accent">Best Price</span> in Seconds</h1>
             <p>Search millions of products across Amazon, Flipkart, and more.</p>
-            <div className="dh-search-container-full">
+            <div className="dh-search-container">
                 <div className="dh-search-box">
                     <input
                         type="text"
