@@ -3,12 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { handleError, handleSuccess } from '../utils';
 import '../styles/Authentication.css';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faLock, faEye, faEyeSlash, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 function Login() {
     const [loginInfo, setLoginInfo] = useState({ email: '', password: '' });
     const [showPassword, setShowPassword] = useState(false);
+
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -34,6 +34,7 @@ function Login() {
             });
             const result = await response.json();
             const { success, message, jwtToken, name, error } = result;
+
             if (success) {
                 handleSuccess(message);
                 localStorage.setItem('token', jwtToken);
@@ -41,7 +42,9 @@ function Login() {
                 setTimeout(() => {
                     navigate('/home')
                 }, 1000)
-            } else if (error) {
+            }
+
+            if (error) {
                 const details = error?.details[0].message;
                 handleError(details);
             } else if (!success) {
@@ -49,9 +52,29 @@ function Login() {
             }
             console.log(result);
         } catch (err) {
-            handleError(err);
+            handleError("Something went wrong. Please try again.");
         }
     }
+    const handleResendLink = async () => {
+        try {
+            const response = await fetch('/resend', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: loginInfo.email })
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                handleSuccess("Verification email sent! Please check your inbox.");
+            } else {
+                handleError(result.message || "Failed to resend email.");
+            }
+        } catch (err) {
+            handleError("An error occurred. Please try again.");
+        }
+    };
     return (
         <div className="auth-container">
             <div className="auth-card">
@@ -88,11 +111,28 @@ function Login() {
                             <span className="auth-toggle-icon" onClick={() => setShowPassword(!showPassword)}>
                                 <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
                             </span>
+
                         </div>
                     </div>
-
+                    <div className="flex justify-end -mt-2">
+                        <Link to="/forgot-password" size="sm" className="text-emerald-600 hover:text-emerald-700 text-sm font-bold no-underline">
+                            Forgot Password?
+                        </Link>
+                    </div>
                     <button className="auth-submit-btn" type="submit">Log In</button>
 
+                    <div className="mt-4 text-center">
+                        <span className="text-slate-600 dark:text-slate-600">
+                            Haven't verified your Account?
+                        </span>
+                        <button
+                            type="button"
+                            onClick={handleResendLink}
+                            className="ml-1 text-emerald-600 hover:text-emerald-700 font-semibold no-underline"
+                        >
+                            Click Here!
+                        </button>
+                    </div>
                     <p className="auth-footer">
                         Don't have an account? <Link to="/signup" className="auth-link">Sign Up</Link>
                     </p>

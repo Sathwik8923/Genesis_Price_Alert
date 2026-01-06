@@ -208,8 +208,9 @@
 .dh-footer {
   margin-top: auto;
   background: var(--primary-dark);
-  color: white;
+  color:  #f8fafc;
   padding: 60px 5% 30px;
+  
 }
 
 .dh-footer-grid {
