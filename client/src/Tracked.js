@@ -32,11 +32,13 @@ const Tracked = () => {
     return (
         <div>
             {isPending && <div>Loading...</div>}
-            {details.map((detail, index) => (
+
+            { Array.isArray(details) && details.map((detail, index) => (
                 <div key={index}>
                     <div>Product Name:{detail.pid.pname}</div>
                     <div>Product Price:{detail.pid.currentprice}</div>
                     <img src={detail.pid.imageurl} width="200" alt={detail.pid.pname} />
+                    <div>Merchant:{detail.pid.website}</div>
                     <a href={detail.pid.purl} target="_blank" rel="noreferrer">Buy Now</a>
                 </div>
             ))}

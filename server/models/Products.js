@@ -7,7 +7,8 @@ const Productschema = new mongoose.Schema({
     },
     purl:{
         type:String,
-        required:true
+        required:true,
+        unique : true
     },
     imageurl:{
         type:String,
@@ -15,6 +16,10 @@ const Productschema = new mongoose.Schema({
     },
     currentprice:{
         type:Number,
+        required:true
+    },
+    website:{
+        type:String,
         required:true
     },
     lastcheckedAt:{

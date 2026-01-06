@@ -1,6 +1,14 @@
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker');
 
 const scrapingcroma = async (name) => {
+
+    puppeteer.use(StealthPlugin())
+    
+    puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
+    
     const browser = await puppeteer.launch({
         headless: false,
         defaultViewport: false,
@@ -10,14 +18,6 @@ const scrapingcroma = async (name) => {
     });
 
     const page = await browser.newPage();
-
-    const context = browser.defaultBrowserContext();
-    await context.overridePermissions('https://www.croma.com', ['geolocation']);
-
-    await page.setGeolocation({
-        latitude: 19.0760,
-        longitude: 72.8777
-    });
 
     await page.goto(`https://www.croma.com/searchB?q=${name}%3Arelevance&text=${name}`, {
         waitUntil: 'networkidle2'
@@ -43,7 +43,7 @@ const scrapingcroma = async (name) => {
 
             price = getPriceNumber(price);
 
-            results.push({ title, price, image, link });
+            results.push({ title, price, image, link ,website : "Croma"});
 
             if (results.length == 3) { break; }
         }

@@ -13,11 +13,15 @@ const TrackedproductsSchema = mongoose.Schema({
     },
     tprice:{
         type:Number,
-        requied:true
+        required:true
     },
     lastNotifiedPrice:{
         type:Number,
         default:null
+    },
+    website:{
+        type:String,
+        required:true
     },
     isActive:{
         type:Boolean,
