@@ -12,7 +12,7 @@ const scrapeProduct = async (name) => {
 
 
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         defaultViewport: false,
         args: [
     '--disable-geolocation',

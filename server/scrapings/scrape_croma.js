@@ -10,7 +10,7 @@ const scrapingcroma = async (name) => {
     puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
     
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         defaultViewport: false,
         args: [
             '--disable-notifications'
