@@ -12,7 +12,7 @@ const getPriceNumber = (text) =>{
 
 const scraping_price = async (url, website) => {
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         defaultViewport: false
     });
     const page = await browser.newPage();

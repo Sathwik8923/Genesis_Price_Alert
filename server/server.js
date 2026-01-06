@@ -1,14 +1,28 @@
 require('dotenv').config();
 const express = require('express');
-// const scrapeProduct = require('./webscrape');
+const scrapeProduct = require('./webscrape');
 const scrapingcroma = require('./scrapings/scrape_croma');
 const scrapingflipkart = require('./scrapings/scrape_flipcart');
 const connectDB = require('./db');
 const authMiddleware = require('./middleware/auth')
 const Products = require('./models/Products');
 const Trackedproducts = require('./models/Trackedproducts');
-const { signup, login } = require('./Controllers/AuthController');
-const { signupValidation, loginValidation } = require('./middleware/Validation');
+const { 
+   signup, 
+    login, 
+    verifyEmail, 
+    resendVerification, 
+    forgotPassword, 
+    resetEmailVerify, 
+    resetPassword
+} = require('./Controllers/AuthController');
+const { 
+    signupValidation, 
+    loginValidation, 
+    forgotPasswordValidation, 
+    resetPasswordValidation 
+} = require('./middleware/Validation');
+
 const cors = require('cors');
 const app = express();
 
@@ -19,10 +33,10 @@ app.use(cors());
 app.post("/search", async (req, res) => {
     try {
         console.log(req.body.name);
-        // const data_a = await scrapeProduct(req.body.name);
+        const data_a = await scrapeProduct(req.body.name);
         const data_c = await scrapingcroma(req.body.name);
         const data_f = await scrapingflipkart(req.body.name);
-        const data = [...data_c,...data_f];
+        const data = [...data_a,...data_c,...data_f];
         data.sort((a,b)=>a.price-b.price);
         res.status(200).json(data);
     }
@@ -31,9 +45,7 @@ app.post("/search", async (req, res) => {
         res.status(500).json({ error: "Scraping failed" });
     }
 })
-app.post("/signup", signupValidation, signup);
 
-app.post("/login", loginValidation, login);
 
 app.get('/test-email', async (req, res) => {
     await updateUserPrices();
@@ -103,6 +115,13 @@ app.get("/tracked", authMiddleware, async (req, res) => {
         })
     }
 })
+app.post("/signup", signupValidation, signup);
+app.post("/login", loginValidation, login);
+app.get("/verify", verifyEmail); 
+app.post("/resend", resendVerification); 
+app.post("/forgot", forgotPasswordValidation, forgotPassword);
+app.get("/reset", resetEmailVerify); 
+app.post("/reset", resetPasswordValidation, resetPassword); 
 
 require('./jobs/cron');
 
