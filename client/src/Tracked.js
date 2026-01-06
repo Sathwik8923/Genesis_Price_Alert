@@ -38,7 +38,7 @@ const Tracked = () => {
                     <div>Product Name:{detail.pid.pname}</div>
                     <div>Product Price:{detail.pid.currentprice}</div>
                     <img src={detail.pid.imageurl} width="200" alt={detail.pid.pname} />
-                    <div>Website:{detail.pid.website}</div>
+                    <div>Merchant:{detail.pid.website}</div>
                     <a href={detail.pid.purl} target="_blank" rel="noreferrer">Buy Now</a>
                 </div>
             ))}

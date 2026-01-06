@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const scrapeProduct = require('./webscrape');
+// const scrapeProduct = require('./webscrape');
 const scrapingcroma = require('./scrapings/scrape_croma');
 const scrapingflipkart = require('./scrapings/scrape_flipcart');
 const connectDB = require('./db');
@@ -19,10 +19,10 @@ app.use(cors());
 app.post("/search", async (req, res) => {
     try {
         console.log(req.body.name);
-        const data_a = await scrapeProduct(req.body.name);
+        // const data_a = await scrapeProduct(req.body.name);
         const data_c = await scrapingcroma(req.body.name);
         const data_f = await scrapingflipkart(req.body.name);
-        const data = [...data_a,...data_c,...data_f];
+        const data = [...data_c,...data_f];
         data.sort((a,b)=>a.price-b.price);
         res.status(200).json(data);
     }
@@ -34,6 +34,11 @@ app.post("/search", async (req, res) => {
 app.post("/signup", signupValidation, signup);
 
 app.post("/login", loginValidation, login);
+
+app.get('/test-email', async (req, res) => {
+    await updateUserPrices();
+    res.send("Email check completed");
+});
 
 app.post("/track", authMiddleware, async (req, res) => {
     try {
@@ -64,9 +69,9 @@ app.post("/track", authMiddleware, async (req, res) => {
         const tracked = new Trackedproducts({
             uid: userId,
             pid: existingproduct._id,
-            tprice: currentprice,
+            tprice: Number(req.body.target_price),
             website : provider,
-            lastNotifiedPrice: currentprice,
+            lastNotifiedPrice: null,
             isActive: true
         })
 
@@ -98,5 +103,7 @@ app.get("/tracked", authMiddleware, async (req, res) => {
         })
     }
 })
+
+require('./jobs/cron');
 
 app.listen(8000, () => console.log("Server running on 8000"));
