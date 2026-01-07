@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const scrapeProduct = require('./webscrape');
+// const scrapeProduct = require('./webscrape');
 const scrapingcroma = require('./scrapings/scrape_croma');
 const scrapingflipkart = require('./scrapings/scrape_flipcart');
 const connectDB = require('./db');
@@ -33,10 +33,12 @@ app.use(cors());
 app.post("/search", async (req, res) => {
     try {
         console.log(req.body.name);
-        const data_a = await scrapeProduct(req.body.name);
-        const data_c = await scrapingcroma(req.body.name);
-        const data_f = await scrapingflipkart(req.body.name);
-        const data = [...data_a,...data_c,...data_f];
+        const oname = req.body.name;
+        const fname = oname.replace(" ", "%20");
+        // const data_a = await scrapeProduct(req.body.name);
+        const data_c = await scrapingcroma(fname);
+        const data_f = await scrapingflipkart(fname);
+        const data = [...data_c,...data_f];
         data.sort((a,b)=>a.price-b.price);
         res.status(200).json(data);
     }
@@ -115,6 +117,28 @@ app.get("/tracked", authMiddleware, async (req, res) => {
         })
     }
 })
+
+app.delete("/tracked/:id", authMiddleware, async (req, res) => {
+  try {
+    const trackedId = req.params.id;
+    const userId = req.user.userId; // from auth middleware
+
+    const deleted = await Trackedproducts.findOneAndDelete({
+      _id: trackedId,
+      uid: userId
+    });
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    res.json({ message: "Tracked product deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 app.post("/signup", signupValidation, signup);
 app.post("/login", loginValidation, login);
 app.get("/verify", verifyEmail); 

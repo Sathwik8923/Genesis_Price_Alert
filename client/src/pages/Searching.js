@@ -7,6 +7,7 @@ const Searching = () => {
     const [isPending, setIsPending] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const navigate = useNavigate();
+    const currencySymbol = '\u20B9';
 
     const handleClick = async () => {
         if (!name.trim()) {
@@ -99,7 +100,7 @@ const Searching = () => {
                         <img src={detail.image} className="dh-card-img" alt={detail.title} />
                         <div className="dh-card-content">
                             <div className="dh-card-title">{detail.title}</div>
-                            <div className="dh-card-price">{detail.price}</div>
+                            <div className="dh-card-price">Cost:{currencySymbol}{detail.price}</div>
                             <div>Merchant:{detail.website}</div>
                         </div>
                         <div className="dh-card-actions">
