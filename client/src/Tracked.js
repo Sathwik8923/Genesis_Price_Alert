@@ -27,6 +27,23 @@ const Tracked = () => {
             });
     }, [token]);
 
+    const handleDelete = (trackedId) => {
+        fetch(`/tracked/${trackedId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        })
+            .then(res => res.json())
+            .then(() => {
+                // remove deleted item from UI
+                setDetails(prev =>
+                    prev.filter(item => item._id !== trackedId)
+                );
+            })
+            .catch(err => console.log(err));
+    };
+
     return (
         <div className="min-h-screen bg-[#f8fafc] pb-20">
             {/* Header Section */}
@@ -93,6 +110,9 @@ const Tracked = () => {
                                         <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center gap-1">
                                             <FontAwesomeIcon icon={faTag} className="text-xs" />
                                             Target: ₹{detail.tprice}
+                                        </div>
+                                        <div>
+                                            <button onClick={() => handleDelete(detail._id)}>Delete</button>
                                         </div>
                                     </div>
 
