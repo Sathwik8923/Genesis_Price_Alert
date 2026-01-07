@@ -2,7 +2,7 @@ const cron = require('node-schedule');
 const updateProducts = require('./update_products');
 const updateTargetPrices = require('./update_users_price');
 
-const job = cron.scheduleJob('* * * * *', async () => {
+const job = cron.scheduleJob('0 * * * *', async () => {
     console.log("Cron Started:")
     try{
         await updateProducts();

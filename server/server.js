@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-// const scrapeProduct = require('./webscrape');
+const scrapeProduct = require('./webscrape');
 const scrapingcroma = require('./scrapings/scrape_croma');
 const scrapingflipkart = require('./scrapings/scrape_flipcart');
 const connectDB = require('./db');
@@ -35,10 +35,10 @@ app.post("/search", async (req, res) => {
         console.log(req.body.name);
         const oname = req.body.name;
         const fname = oname.replace(" ", "%20");
-        // const data_a = await scrapeProduct(req.body.name);
+        const data_a = await scrapeProduct(req.body.name);
         const data_c = await scrapingcroma(fname);
         const data_f = await scrapingflipkart(fname);
-        const data = [...data_c,...data_f];
+        const data = [...data_a,...data_c,...data_f];
         data.sort((a,b)=>a.price-b.price);
         res.status(200).json(data);
     }
