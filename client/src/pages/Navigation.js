@@ -28,7 +28,6 @@ const Navigation = () => {
                 <Link to="/" className="dh-logo">Deal<span>Hunt</span></Link>
                 
                 <div className="dh-nav-links">
-                    {/* 2. Added Tracked Products with FontAwesome Icon */}
                     <Link to="/tracked" className="dh-nav-item dh-wishlist-link">
                         <FontAwesomeIcon icon={faHeart} className="dh-wishlist-icon" size='lg' />
                     </Link>

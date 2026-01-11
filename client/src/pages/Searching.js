@@ -11,7 +11,7 @@ const Searching = () => {
 
     const handleClick = async () => {
         if (!name.trim()) {
-            setErrorMsg('Please enter something to search!');
+            setErrorMsg('Please enter something to search !');
             return;
         }
 
@@ -47,7 +47,7 @@ const Searching = () => {
             return;
         }
 
-        let target_price = prompt(`Please enter your Taeget Price of this Product{Actual Price : ${detail.price}}`);
+        let target_price = prompt(`Please enter your Target Price of this Product{Actual Price : ${detail.price}}`);
 
         if (!target_price || isNaN(target_price) || Number(target_price) <= 0) {
             alert("Enter a Valid Price");
@@ -90,7 +90,7 @@ const Searching = () => {
                         value={name}
                         onChange={(e) => {
                             setName(e.target.value);
-                            if (errorMsg) setErrorMsg(''); // Clear error as user types
+                            if (errorMsg) setErrorMsg('');
                         }}
                         onKeyDown={handleKeyDown}
                     />

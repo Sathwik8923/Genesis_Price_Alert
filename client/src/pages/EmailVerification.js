@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'; // Added useRef
+import React, { useEffect, useState, useRef } from 'react'; 
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faTimesCircle, faSpinner, faPaperPlane, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -9,23 +9,22 @@ function EmailVerification() {
     const [searchParams] = useSearchParams();
     const [status, setStatus] = useState('verifying');
     const [isResending, setIsResending] = useState(false);
-    const hasCalledRef = useRef(false); // Ref to track if verification was already attempted
+    const hasCalledRef = useRef(false); 
 
     const email = searchParams.get('email');
     const token = searchParams.get('token');
 
     useEffect(() => {
         const verify = async () => {
-            // Prevent duplicate calls in React Strict Mode
+            
             if (hasCalledRef.current) return;
             hasCalledRef.current = true;
 
             try {
-                // Ensure full URL to backend port 8000
+                
                 const response = await fetch(`http://localhost:8000/verify?token=${token}&email=${email}`);
                 const result = await response.json();
 
-                // Small timeout to let user see the "Verifying" state
                 setTimeout(() => {
                     if (result.success) {
                         setStatus('success');
@@ -48,7 +47,6 @@ function EmailVerification() {
     const handleResend = async () => {
         setIsResending(true);
         try {
-            // Updated to full backend URL for consistency
             const response = await fetch('http://localhost:8000/resend', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -72,7 +70,6 @@ function EmailVerification() {
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-[#0f172a] font-['Plus_Jakarta_Sans'] text-center">
             <div className="bg-white/85 backdrop-blur-xl border border-white/30 rounded-[28px] w-full max-w-[500px] p-10 md:p-14 shadow-2xl">
 
-                {/* 1. VERIFYING STATE */}
                 {status === 'verifying' && (
                     <>
                         <FontAwesomeIcon icon={faSpinner} className="text-emerald-500 text-6xl mb-6 animate-spin" />
@@ -80,9 +77,9 @@ function EmailVerification() {
                     </>
                 )}
 
-                {/* 2. SUCCESS STATE: Tick mark, no Resend button */}
+                
                 {status === 'success' && (
-                    <div className="flex flex-col items-center justify-center w-full"> {/* Added items-center and w-full */}
+                    <div className="flex flex-col items-center justify-center w-full"> 
                         {/* Success Icon */}
                         <FontAwesomeIcon icon={faCheckCircle} className="text-emerald-500 text-6xl mb-6" />
 
@@ -92,23 +89,24 @@ function EmailVerification() {
                             Your account is now active. You can start tracking prices.
                         </p>
 
-                        {/* Centered Back to Login Link */}
-                        <div className="flex justify-center w-full"> {/* Wrapper to force center alignment */}
+                        
+                        <div className="flex justify-center w-full"> 
                             <Link
                                 to="/login"
                                 className="group flex items-center gap-2 text-slate-800 font-bold hover:text-emerald-600 transition-all duration-300 no-underline"
                             >
-                                <FontAwesomeIcon
-                                    icon={faArrowLeft}
-                                    className="text-sm transform group-hover:-translate-x-1 transition-transform"
-                                />
-                                Back to Login
+                                <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center transition-all duration-300 group-hover:bg-[#10b981] group-hover:scale-110 shadow-sm">
+                                    <FontAwesomeIcon
+                                        icon={faArrowLeft}
+                                        className="text-white text-lg transform group-hover:-translate-x-1 transition-transform"
+                                    />
+                                </div>
                             </Link>
                         </div>
                     </div>
                 )}
 
-                {/* 3. ERROR STATE: Cross mark with Resend button */}
+              
                 {status === 'error' && (
                     <div className="flex flex-col items-center justify-center w-full">
                         <FontAwesomeIcon icon={faTimesCircle} className="text-red-500 text-6xl mb-6" />
@@ -117,7 +115,7 @@ function EmailVerification() {
                             The link is invalid or has expired. This can happen if you've already verified or requested a newer link.
                         </p>
 
-                        <div className="flex flex-col items-center gap-4 w-full"> {/* Changed to items-center */}
+                        <div className="flex flex-col items-center gap-4 w-full">
                             <button
                                 onClick={handleResend}
                                 disabled={isResending}
@@ -130,17 +128,17 @@ function EmailVerification() {
                                 {isResending ? "Sending..." : "Resend Verification Link"}
                             </button>
 
-                            {/* Centered Link Wrapper */}
                             <div className="flex justify-center w-full mt-2">
                                 <Link
                                     to="/login"
                                     className="group flex items-center gap-2 text-slate-800 font-bold hover:text-emerald-600 transition-all duration-300 no-underline"
                                 >
-                                    <FontAwesomeIcon
-                                        icon={faArrowLeft}
-                                        className="text-sm transform group-hover:-translate-x-1 transition-transform"
-                                    />
-                                    Back to Login
+                                    <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center transition-all duration-300 group-hover:bg-[#10b981] group-hover:scale-110 shadow-sm">
+                                        <FontAwesomeIcon
+                                            icon={faArrowLeft}
+                                            className="text-white text-lg transform group-hover:-translate-x-1 transition-transform"
+                                        />
+                                    </div>
                                 </Link>
                             </div>
                         </div>
