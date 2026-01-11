@@ -46,30 +46,36 @@ const Tracked = () => {
 
     return (
         <div className="min-h-screen bg-[#f8fafc] pb-20">
-            {/* Header Section */}
-            {/* Header Section - Height reduced to match Navbar (approx 80px) */}
-            {/* Header Section - Height matches Home Navbar (80px) */}
-            <div className="bg-white border-b border-slate-200 py-2 px-[5%] mb-8 relative flex items-center justify-center min-h-[80px]">
 
-                {/* 1. Back Aligned Option */}
+            {/* Seamless Hero-Style Header Section */}
+            <div className="bg-[#f8fafc] py-12 px-[5%] mb-4 relative flex items-center justify-center">
+
+                {/* 1. Back to Home Option (Left Aligned) */}
                 {Array.isArray(details) && details.length > 0 && (
-                    <div className="absolute left-[5%] hidden lg:block">
-                        <Link to="/home" className="group flex items-center gap-2 no-underline">
-                            <FontAwesomeIcon icon={faArrowLeft} className="text-sm text-[#10b981] group-hover:-translate-x-1 transition-transform" />
-                            <span className="text-sm text-black font-bold group-hover:text-[#10b981]">Back to Home</span>
+                    <div className="absolute left-[5%] top-1/2 -translate-y-1/2 hidden lg:block">
+                        <Link
+                            to="/"
+                            className="group flex items-center gap-3 no-underline transition-all duration-300"
+                        >
+                            <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center transition-all duration-300 group-hover:bg-[#10b981] group-hover:scale-110 shadow-sm">
+                                <FontAwesomeIcon
+                                    icon={faArrowLeft}
+                                    className="text-white text-lg transform group-hover:-translate-x-1 transition-transform"
+                                />
+                            </div>
+
                         </Link>
                     </div>
                 )}
 
-                {/* 2. Heading and Tagline */}
-                <div className="text-center flex flex-col items-center">
-                    <h1 className="text-lg md:text-xl font-extrabold tracking-tight leading-tight m-0">
+                {/* 2. Main Content - Integrated Flow */}
+                <div className="text-center flex flex-col items-center gap-2">
+                    <h1 className="text-2xl md:text-3xl font-[700] text-[#0f172a] ">
                         <span className="text-[#0f172a]">My Tracked </span>
                         <span className="text-[#10b981]">Products</span>
                     </h1>
 
-                    {/* THE TAGLINE: Small, subtle, and matching the Navbar flow */}
-                    <p className="text-[11px] md:text-[12px] text-slate-500 font-medium m-0 uppercase tracking-[0.1em]">
+                    <p className="text-lg md:text-xl font-bold text-slate-700 max-w-2xl mx-auto m-0 ">
                         We're monitoring these prices for you in real-time.
                     </p>
                 </div>
@@ -81,7 +87,7 @@ const Tracked = () => {
                         <p className="text-slate-500 font-bold">Loading your wishlist...</p>
                     </div>
                 ) : Array.isArray(details) && details.length > 0 ? (
-                    /* The Product Grid - matching Searching.js layout */
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                         {details.map((detail, index) => (
                             <div key={index} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col group">
@@ -111,13 +117,10 @@ const Tracked = () => {
                                             <FontAwesomeIcon icon={faTag} className="text-xs" />
                                             Target: ₹{detail.tprice}
                                         </div>
-                                        <div>
-                                            <button onClick={() => handleDelete(detail._id)}>Delete</button>
-                                        </div>
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="flex flex-col gap-3">
+                                    <div className="flex flex-col gap-3 mt-4">
                                         <a
                                             href={detail.pid.purl}
                                             target="_blank"
@@ -126,6 +129,12 @@ const Tracked = () => {
                                         >
                                             View Deal <FontAwesomeIcon icon={faExternalLinkAlt} className="text-xs" />
                                         </a>
+                                        <button
+                                            onClick={() => handleDelete(detail._id)}
+                                            className="w-full bg-white border-2 border-slate-400 text-slate-800 hover:border-red-500 hover:text-red-500 py-3 rounded-xl font-[900] tracking-tighter flex items-center justify-center gap-2 transition-all duration-300 shadow-sm"
+                                        >
+                                            Remove Product
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +147,7 @@ const Tracked = () => {
                         <p className="text-slate-500 mb-8 font-medium">Start searching for products to add them to your tracking list and never miss a price drop!</p>
                         <Link
                             to="/home"
-                            className="inline-flex items-center gap-2 text-emerald-600 font-bold hover:underline"
+                            className="inline-flex items-center gap-2 text-emerald-600 font-bold"
                         >
                             <FontAwesomeIcon icon={faArrowLeft} />
                             Go back to Home

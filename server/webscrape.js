@@ -1,93 +1,90 @@
-// const puppeteer = require('puppeteer')
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker');
+
+puppeteer.use(StealthPlugin());
 
 const scrapeProduct = async (name) => {
-    console.log("Scraping for:", name);
+  console.log("🔍 Scraping for:", name);
 
-    puppeteer.use(StealthPlugin())
+  const browser = await puppeteer.launch({
+    headless: true,
+    defaultViewport: null,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-infobars',
+      '--disable-blink-features=AutomationControlled',
+      '--start-maximized'
+    ]
+  });
 
-    puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
+  const page = await browser.newPage();
 
+  await page.setUserAgent(
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
+    'AppleWebKit/537.36 (KHTML, like Gecko) ' +
+    'Chrome/121.0.0.0 Safari/537.36'
+  );
 
-    const browser = await puppeteer.launch({
-        headless: true,
-        defaultViewport: false,
-        args: [
-    '--disable-geolocation',
-    '--disable-notifications'
-  ]
-    });
-    const page = await browser.newPage();
+  await page.evaluateOnNewDocument(() => {
+    Object.defineProperty(navigator, 'webdriver', { get: () => false });
+  });
 
-    await page.goto(`https://www.amazon.in/s?k=${name}`, {
-        waitUntil: 'networkidle2'
-    });
+  await new Promise(resolve => setTimeout(resolve, 5000));
 
-    await page.waitForSelector('div[data-component-type="s-search-result"]');
+  const url = `https://www.amazon.in/s?k=${encodeURIComponent(name)}`;
 
-    const products = await page.evaluate(() => {
-
-        const results = [];
-
-        const productDetails = document.querySelectorAll('div[data-component-type="s-search-result"]');
-
-
-        const getPriceNumber = (price) => {
-            return Number(price.replace(/[^0-9]/g, ""));
-        };
-
-        for (const productDetail of productDetails) {
-            if (productDetail.textContent.includes("Sponsored")) { continue; }
-            const title = productDetail.querySelector('a > h2 > span').textContent;
-            const image = productDetail.querySelector('img.s-image').src;
-            const link = "https://www.amazon.in" + productDetail.querySelector('.a-link-normal').getAttribute('href');
+  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 0 });
 
 
-            let price = "N/A";
+await new Promise(resolve => setTimeout(resolve, 5000));
 
-            const offscreen =
-                productDetail.querySelector('span.a-offscreen');
-            if (offscreen) {
-                price = offscreen.textContent.trim();
-            }
+const blocked = await page.evaluate(() => {
+  const h1 = document.querySelector('h1');
+  return h1 && h1.innerText.includes('Oops');
+});
 
-            if (price === "N/A") {
-                const whole =
-                    productDetail.querySelector('span.a-price-whole')?.textContent;
-                const fraction =
-                    productDetail.querySelector('span.a-price-fraction')?.textContent;
-
-                if (whole) {
-                    price = fraction ? `${whole}.${fraction}` : whole;
-                }
-            }
-
-            if (price === "N/A") {
-                const altPrice =
-                    productDetail.querySelector(
-                        'div.a-section.a-spacing-none.a-spacing-top-mini > div > span.a-color-base'
-                    );
-
-                if (altPrice) {
-                    price = altPrice.textContent.trim();
-                }
-            }
-
-            price = getPriceNumber(price);
-
-            results.push({ title, price, image, link ,website : "Amazon"});
-            if (results.length == 3) { break; }
-        }
-        return results;
-    })
-
-    // await page.screenshot({path : "example.png"});
-
-    await browser.close();
-
-    return products;
+if (blocked) {
+  console.log("⛔ Amazon blocked this request.");
+  await browser.close();
+  return [];
 }
+
+  await page.waitForSelector('div[data-component-type="s-search-result"]', { timeout: 0 });
+
+  const products = await page.evaluate(() => {
+    const results = [];
+
+    const productCards = document.querySelectorAll('div[data-component-type="s-search-result"]');
+
+    const getNumber = (text) => Number(text.replace(/[^0-9]/g, ''));
+
+    for (const card of productCards) {
+      if (card.innerText.includes("Sponsored")) continue;
+
+      const title = card.querySelector('a > h2 > span')?.innerText;
+      const image = card.querySelector('img.s-image')?.src;
+      const link = "https://www.amazon.in" + card.querySelector('a.a-link-normal')?.getAttribute('href');
+
+      let price = "N/A";
+
+      const offscreen = card.querySelector('span.a-offscreen');
+      if (offscreen) price = offscreen.innerText;
+
+      price = price !== "N/A" ? getNumber(price) : null;
+
+      if (title && image && link && price) {
+        results.push({ title, price, image, link, website: "Amazon" });
+      }
+
+      if (results.length === 5) break;
+    }
+
+    return results;
+  });
+
+  await browser.close();
+  return products;
+};
 
 module.exports = scrapeProduct;

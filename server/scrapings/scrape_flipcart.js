@@ -20,7 +20,7 @@ const scrapingflipkart = async (name) => {
     const page = await browser.newPage();
 
     await page.goto(`https://www.flipkart.com/search?q=${name}`, {
-        waitUntil: 'networkidle2'
+        waitUntil: 'domcontentloaded'
     });
 
     await page.waitForSelector('.lvJbLV');
@@ -60,7 +60,7 @@ const products = await page.evaluate(() => {
 
         results.push({ title, price, image, link,website : "Flipkart" });
 
-        if (results.length === 3) break;
+        if (results.length === 5) break;
     }
 
     return results;
