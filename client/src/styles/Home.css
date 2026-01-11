@@ -40,13 +40,19 @@
 }
 
 .dh-logo {
-  font-size: 24px;
+  font-size: 32px; 
   font-weight: 800;
   color: var(--primary-dark);
   text-decoration: none;
+  letter-spacing: -0.5px; 
+  display: flex;
+  align-items: center;
 }
 
-.dh-logo span { color: var(--primary-green); }
+.dh-logo span {
+  color: var(--primary-green);
+  font-size: 32px; 
+}
 
 .dh-nav-links {
   display: flex;

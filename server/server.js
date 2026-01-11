@@ -64,7 +64,6 @@ app.post("/search", async (req, res) => {
     }
 })
 
-
 app.get('/test-email', async (req, res) => {
     await updateUserPrices();
     res.send("Email check completed");
