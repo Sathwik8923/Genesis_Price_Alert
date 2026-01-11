@@ -3,7 +3,7 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker');
 
 puppeteer.use(StealthPlugin())
-
+//scrape_price
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 const getPriceNumber = (text) =>{
@@ -20,23 +20,36 @@ const scraping_price = async (url, website) => {
     await page.goto(url, {
         waitUntil: 'networkidle2'
     });
-    let price;
+    let price = null;
     if (website === "Amazon") {
         price = await page.evaluate(()=>{
-            return document.querySelector('.a-price-whole').textContent;
+            const el = document.querySelector('.a-price-whole');
+            return el? el.textContent: null;
         })
     }
     else if (website === "Croma") {
         price = await page.evaluate(()=>{
-            return document.querySelector('.amount').textContent;
+            const el = document.querySelector('.amount');
+            return el? el.textContent:null;
+        })
+    }
+    else if(website === "Flipkart"){
+        price = await page.evaluate(()=>{
+            const el = document.querySelector('.hZ3P6w');
+            return el? el.textContent:null;
         })
     }
     else {
         price = await page.evaluate(()=>{
-            return document.querySelector('.hZ3P6w').textContent;
+            const box =  document.querySelector('.product-price');
+            if(!box){
+                return null;
+            }
+            return box.textContent || box.innerHTML;
         })
     }
     await browser.close();
+    if (!price) return null;
     price = getPriceNumber(price);
     return price;
 }
