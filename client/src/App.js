@@ -8,6 +8,7 @@ import Tracked from './Tracked';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import EmailVerification from './pages/EmailVerification';
+import PriceAlerts from './pages/PriceAlerts';
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const PrivateRoute = ({ element }) => {
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/reset" element={<ResetPassword />} />
         <Route path='/home' element={<PrivateRoute element={<Home />} />} />
         <Route path='/tracked' element={<PrivateRoute element={<Tracked />} />} />
+        <Route path='/price-alerts' element={<PrivateRoute element={<PriceAlerts />} />} />
       </Routes>
     </div>
   );

@@ -5,13 +5,12 @@ const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker');
 puppeteer.use(StealthPlugin());
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
 
-// 🔧 Normalize text
 const normalize = text =>
   text.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
 
 const scrapingReliance = async (name) => {
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     defaultViewport: false,
     args: ['--disable-notifications']
   });
@@ -30,7 +29,6 @@ const scrapingReliance = async (name) => {
 
   await page.waitForSelector('.main-grid', { timeout: 10000 });
 
-  // Let lazy images load
   await new Promise(resolve => setTimeout(resolve, 3000));
 
   const products = await page.evaluate((queryWords) => {
@@ -56,7 +54,6 @@ const scrapingReliance = async (name) => {
       const title = titleEl.innerText.trim();
       const cleanTitle = normalize(title);
 
-      // 🧠 Relevance filtering
       const isRelevant = queryWords.some(word => cleanTitle.includes(word));
       if (!isRelevant) continue;
 

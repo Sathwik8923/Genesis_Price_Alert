@@ -3,7 +3,6 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker');
 
 puppeteer.use(StealthPlugin())
-//scrape_price
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 const getPriceNumber = (text) =>{

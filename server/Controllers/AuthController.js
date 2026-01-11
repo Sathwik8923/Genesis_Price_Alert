@@ -17,7 +17,7 @@ const signup = async (req, res) => {
         }
 
         const token = makeToken();
-        const expires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+        const expires = Date.now() + 24 * 60 * 60 * 1000;
 
         const userModel = new UserModel({ 
             name, 
@@ -30,7 +30,6 @@ const signup = async (req, res) => {
         userModel.password = await bcrypt.hash(password, 10);
         await userModel.save();
 
-        // Send Verification Email
         const verifyUrl = `${FRONTEND_BASE}/verify?token=${token}&email=${encodeURIComponent(email)}`;
         await sendMail({
             to: email,
@@ -73,7 +72,6 @@ const login = async (req, res) => {
         const isPassEqual = await bcrypt.compare(password, user.password);
         if (!isPassEqual) return res.status(403).json({ message: 'Invalid credentials', success: false });
 
-        // Check if verified
         if (!user.isVerified) {
             return res.status(403).json({ message: "Please verify your email first", success: false, needVerify: true });
         }
@@ -97,7 +95,7 @@ const forgotPassword = async (req, res) => {
 
         const token = makeToken();
         user.resetToken = token;
-        user.resetTokenExpires = Date.now() + 3600000; // 1 hour
+        user.resetTokenExpires = Date.now() + 3600000;
         await user.save();
 
         const resetUrl = `${FRONTEND_BASE}/reset?token=${token}&email=${encodeURIComponent(email)}`;
@@ -116,14 +114,12 @@ const forgotPassword = async (req, res) => {
 const resetPassword = async (req, res) => {
     try {
         const { email, token, password } = req.body;
-        
-        // 1. Find the user
+
         const user = await UserModel.findOne({ email, resetToken: token });
         if (!user) {
             return res.status(400).json({ message: "Invalid or expired link", success: false });
         }
 
-        // 2. CHECK: Is the new password the same as the old one?
         const isSamePassword = await bcrypt.compare(password, user.password);
         if (isSamePassword) {
             return res.status(400).json({ 
@@ -132,9 +128,8 @@ const resetPassword = async (req, res) => {
             });
         }
 
-        // 3. If it's a new password, hash and save it
         user.password = await bcrypt.hash(password, 10);
-        user.resetToken = undefined; // Clear the token
+        user.resetToken = undefined; 
         user.resetTokenExpires = undefined;
         await user.save();
 
@@ -153,7 +148,7 @@ const resendVerification = async (req, res) => {
 
         const token = makeToken();
         user.verifyToken = token;
-        user.verifyTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+        user.verifyTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
         await user.save();
 
         const verifyUrl = `${FRONTEND_BASE}/verify?token=${token}&email=${encodeURIComponent(email)}`;
@@ -196,13 +191,12 @@ const resetEmailVerify = async (req, res) => {
     }
 };
 
-// Update your module.exports at the bottom
 module.exports = { 
     signup, 
     login, 
     verifyEmail, 
     resendVerification, 
     forgotPassword, 
-    resetEmailVerify, // Added this
+    resetEmailVerify,
     resetPassword
 };

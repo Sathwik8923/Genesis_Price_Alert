@@ -8,6 +8,7 @@ const connectDB = require('./db');
 const authMiddleware = require('./middleware/auth')
 const Products = require('./models/Products');
 const Trackedproducts = require('./models/Trackedproducts');
+const PriceAlertHistory = require('./models/PriceAlertHistory');
 const {
     signup,
     login,
@@ -136,7 +137,7 @@ app.get("/tracked", authMiddleware, async (req, res) => {
 app.delete("/tracked/:id", authMiddleware, async (req, res) => {
     try {
         const trackedId = req.params.id;
-        const userId = req.user.userId; // from auth middleware
+        const userId = req.user.userId;
 
         const deleted = await Trackedproducts.findOneAndDelete({
             _id: trackedId,
@@ -153,6 +154,19 @@ app.delete("/tracked/:id", authMiddleware, async (req, res) => {
     }
 });
 
+app.get('/price-alerts', authMiddleware, async (req, res) => {
+    try {
+        const alerts = await PriceAlertHistory
+            .find({ uid: req.user.userId })
+            .populate('pid')
+            .sort({ alertedAt: -1 });
+
+        res.json(alerts);
+    } catch (err) {
+        res.status(500).json({ message: "Failed to fetch alert history" });
+    }
+});
+
 
 app.post("/signup", signupValidation, signup);
 app.post("/login", loginValidation, login);
@@ -162,6 +176,6 @@ app.post("/forgot", forgotPasswordValidation, forgotPassword);
 app.get("/reset", resetEmailVerify);
 app.post("/reset", resetPasswordValidation, resetPassword);
 
-// require('./jobs/cron');
+require('./jobs/cron');
 
 app.listen(8000, () => console.log("Server running on 8000"));
