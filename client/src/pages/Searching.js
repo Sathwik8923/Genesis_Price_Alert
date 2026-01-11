@@ -49,7 +49,7 @@ const Searching = () => {
 
         let target_price = prompt(`Please enter your Taeget Price of this Product{Actual Price : ${detail.price}}`);
 
-        if(!target_price || isNaN(target_price) || Number(target_price) <= 0){
+        if (!target_price || isNaN(target_price) || Number(target_price) <= 0) {
             alert("Enter a Valid Price");
             return;
         }
@@ -66,7 +66,7 @@ const Searching = () => {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify({ detail , target_price})
+            body: JSON.stringify({ detail, target_price })
         });
 
         if (responseTrack.ok) alert("Price tracking active for this item!");
@@ -74,8 +74,14 @@ const Searching = () => {
 
     return (
         <div className="dh-hero">
-            <h1>Find the <span className="brand-accent">Best Price</span> in Seconds</h1>
-            <p>Search millions of products across Amazon, Flipkart, and more.</p>
+            <div className="text-center mb-10">
+                <h1 className="text-2xl md:text-4xl font-semibold text-[#0f172a] tracking-tight mb-4">
+                    Find the <span className="text-[#10b981]">Best Price</span> in Seconds
+                </h1>
+                <p className="text-lg md:text-xl font-semibold text-slate-600 max-w-2xl mx-auto">
+                    Search millions of products across Amazon, Flipkart, and more.
+                </p>
+            </div>
             <div className="dh-search-container">
                 <div className="dh-search-box">
                     <input
