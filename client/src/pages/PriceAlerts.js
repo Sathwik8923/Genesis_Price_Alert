@@ -43,7 +43,6 @@ const PriceAlerts = () => {
       {alerts.map(alert => (
         <div key={alert._id} style={{ border: "1px solid #444", margin: "10px", padding: "10px" }}>
           <p><b>Product:</b> {alert.pid?.pname}</p>
-          <p><b>Old Price:</b> ₹{alert.oldPrice}</p>
           <p><b>New Price:</b> ₹{alert.newPrice}</p>
           <p><b>Website:</b> {alert.website}</p>
           <p><b>Date:</b> {new Date(alert.alertedAt).toLocaleString()}</p>

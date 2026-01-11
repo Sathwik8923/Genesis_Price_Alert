@@ -31,7 +31,7 @@ const updating_target_prices = async () => {
                 from: process.env.EMAIL_USER,
                 to: tp.uid.email,
                 subject: 'Price Drop Alert!',
-                text: `Good News!! The price for ${tp.pid.pname} has dropped from ${oldPrice} to ${newPrice} rupees`
+                text: `Good News!! The price for ${tp.pid.pname} has dropped from to ${newPrice} rupees`
             };
 
             await transporter.sendMail(mailOptions, function (error, info) { if (error) { console.log(error); } else { console.log('Email sent: ' + info.response); } });
