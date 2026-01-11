@@ -7,7 +7,7 @@ const scrapeProduct = async (name) => {
   console.log("🔍 Scraping for:", name);
 
   const browser = await puppeteer.launch({
-    headless: false,                         // must be false for Amazon
+    headless: true,
     defaultViewport: null,
     args: [
       '--no-sandbox',
@@ -20,7 +20,6 @@ const scrapeProduct = async (name) => {
 
   const page = await browser.newPage();
 
-  // 🧬 Real browser identity
   await page.setUserAgent(
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
     'AppleWebKit/537.36 (KHTML, like Gecko) ' +
@@ -31,17 +30,15 @@ const scrapeProduct = async (name) => {
     Object.defineProperty(navigator, 'webdriver', { get: () => false });
   });
 
-  // 🚶‍♂️ Human-like delay before visiting
   await new Promise(resolve => setTimeout(resolve, 5000));
 
   const url = `https://www.amazon.in/s?k=${encodeURIComponent(name)}`;
 
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 0 });
 
-  // ⏳ Let Amazon fully load
+
 await new Promise(resolve => setTimeout(resolve, 5000));
 
-  // 🛑 Detect block page
 const blocked = await page.evaluate(() => {
   const h1 = document.querySelector('h1');
   return h1 && h1.innerText.includes('Oops');
@@ -53,7 +50,6 @@ if (blocked) {
   return [];
 }
 
-  // 🧲 Wait for real products
   await page.waitForSelector('div[data-component-type="s-search-result"]', { timeout: 0 });
 
   const products = await page.evaluate(() => {

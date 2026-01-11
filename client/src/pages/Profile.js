@@ -33,7 +33,12 @@ const Profile = ({ isOpen, onClose, onLogout, username }) => {
                         >
                             My Tracked Products
                         </Link>
-                        <button className="dh-menu-item">Price Alerts</button>
+                        <Link
+                            to="/price-alerts"
+                            className="dh-menu-item no-underline block w-full text-left"
+                        >
+                            Price Alerts
+                        </Link>
                     </div>
                 </div>
 
