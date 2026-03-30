@@ -1,26 +1,29 @@
 require('dotenv').config();
 const express = require('express');
+const rateLimit = require('express-rate-limit');  // ✅ rate limiter
 const scrapeProduct = require('./webscrape');
 const scrapingcroma = require('./scrapings/scrape_croma');
 const scrapingflipkart = require('./scrapings/scrape_flipcart');
+const scrapingReliance = require('./scrapings/scrape_reliance');
 const connectDB = require('./db');
 const authMiddleware = require('./middleware/auth')
 const Products = require('./models/Products');
 const Trackedproducts = require('./models/Trackedproducts');
-const { 
-   signup, 
-    login, 
-    verifyEmail, 
-    resendVerification, 
-    forgotPassword, 
-    resetEmailVerify, 
+const PriceAlertHistory = require('./models/PriceAlertHistory');
+const {
+    signup,
+    login,
+    verifyEmail,
+    resendVerification,
+    forgotPassword,
+    resetEmailVerify,
     resetPassword
 } = require('./Controllers/AuthController');
-const { 
-    signupValidation, 
-    loginValidation, 
-    forgotPasswordValidation, 
-    resetPasswordValidation 
+const {
+    signupValidation,
+    loginValidation,
+    forgotPasswordValidation,
+    resetPasswordValidation
 } = require('./middleware/Validation');
 
 const cors = require('cors');
@@ -30,16 +33,38 @@ connectDB();
 
 app.use(express.json());
 app.use(cors());
-app.post("/search", async (req, res) => {
+
+// ✅ Rate limiter: max 10 searches per IP per minute
+const searchLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 10,
+    message: { error: "Too many search requests. Please wait a moment and try again." }
+});
+
+const safeScrape = async (scraper, name) => {
+    try {
+        const result = await scraper(name);
+        return Array.isArray(result) ? result : [];
+    } catch (error) {
+        console.error("❌ Scraper failed:", error.message);
+        return [];
+    }
+};
+
+
+app.post("/search", searchLimiter, async (req, res) => {
     try {
         console.log(req.body.name);
         const oname = req.body.name;
-        const fname = oname.replace(" ", "%20");
-        const data_a = await scrapeProduct(req.body.name);
-        const data_c = await scrapingcroma(fname);
-        const data_f = await scrapingflipkart(fname);
-        const data = [...data_a,...data_c,...data_f];
-        data.sort((a,b)=>a.price-b.price);
+        const cname = encodeURIComponent(oname);   // ✅ encodes ALL spaces and special chars
+        const fname = oname.replace(/\s+/g, '+');  // ✅ replaces ALL spaces for Flipkart
+        const data_a = await safeScrape(scrapeProduct, fname);
+        const data_c = await safeScrape(scrapingcroma, cname);
+        const data_f = await safeScrape(scrapingflipkart, cname);
+        const data_r = await safeScrape(scrapingReliance, oname);
+        const data = [...data_a,...data_c,...data_f,...data_r]
+            .filter(item => item && item.price);
+        data.sort((a, b) => a.price - b.price);
         res.status(200).json(data);
     }
     catch (err) {
@@ -47,7 +72,6 @@ app.post("/search", async (req, res) => {
         res.status(500).json({ error: "Scraping failed" });
     }
 })
-
 
 app.get('/test-email', async (req, res) => {
     await updateUserPrices();
@@ -58,14 +82,14 @@ app.post("/track", authMiddleware, async (req, res) => {
     try {
         const pname = req.body.detail.title
         const purl = req.body.detail.link
-        const imageurl = req.body.detail.image
+        const imageurl = req.body.detail.image;
         const currentprice = req.body.detail.price;
         const provider = req.body.detail.website;
         const userId = req.user.userId;
         let existingproduct = await Products.findOne({ purl });
         if (!existingproduct) {
             existingproduct = new Products({
-                pname, purl, imageurl, currentprice, website : provider,lastcheckedAt: new Date()
+                pname, purl, imageurl, currentprice, website: provider, lastcheckedAt: new Date()
             });
 
             await existingproduct.save();
@@ -84,7 +108,7 @@ app.post("/track", authMiddleware, async (req, res) => {
             uid: userId,
             pid: existingproduct._id,
             tprice: Number(req.body.target_price),
-            website : provider,
+            website: provider,
             lastNotifiedPrice: null,
             isActive: true
         })
@@ -119,34 +143,48 @@ app.get("/tracked", authMiddleware, async (req, res) => {
 })
 
 app.delete("/tracked/:id", authMiddleware, async (req, res) => {
-  try {
-    const trackedId = req.params.id;
-    const userId = req.user.userId; // from auth middleware
+    try {
+        const trackedId = req.params.id;
+        const userId = req.user.userId;
 
-    const deleted = await Trackedproducts.findOneAndDelete({
-      _id: trackedId,
-      uid: userId
-    });
+        const deleted = await Trackedproducts.findOneAndDelete({
+            _id: trackedId,
+            uid: userId
+        });
 
-    if (!deleted) {
-      return res.status(404).json({ message: "Item not found" });
+        if (!deleted) {
+            return res.status(404).json({ message: "Item not found" });
+        }
+
+        res.json({ message: "Tracked product deleted" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
+});
 
-    res.json({ message: "Tracked product deleted" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+app.get('/price-alerts', authMiddleware, async (req, res) => {
+    try {
+        const alerts = await PriceAlertHistory
+            .find({ uid: req.user.userId })
+            .populate('pid')
+            .sort({ alertedAt: -1 });
+
+        res.json(alerts);
+    } catch (err) {
+        res.status(500).json({ message: "Failed to fetch alert history" });
+    }
 });
 
 
 app.post("/signup", signupValidation, signup);
 app.post("/login", loginValidation, login);
-app.get("/verify", verifyEmail); 
-app.post("/resend", resendVerification); 
+app.get("/verify", verifyEmail);
+app.post("/resend", resendVerification);
 app.post("/forgot", forgotPasswordValidation, forgotPassword);
-app.get("/reset", resetEmailVerify); 
-app.post("/reset", resetPasswordValidation, resetPassword); 
+app.get("/reset", resetEmailVerify);
+app.post("/reset", resetPasswordValidation, resetPassword);
 
 require('./jobs/cron');
 
-app.listen(8000, () => console.log("Server running on 8000"));
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => console.log("Listening to port", PORT));
