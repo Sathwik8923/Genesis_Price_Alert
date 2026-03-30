@@ -11,7 +11,7 @@ async function createTransport() {
   if (cachedTransporter) return cachedTransporter;
 
   const host = getEnv('EMAIL_HOST');
-  const port = Number(getEnv('EMAIL_PORT', '465')); // default 465
+  const port = Number(getEnv('EMAIL_PORT', '465'));
   const secureEnv = getEnv('EMAIL_SECURE');
   const secure = secureEnv === 'true' ? true : (port === 465);
   const user = getEnv('EMAIL_USER');
@@ -21,7 +21,6 @@ async function createTransport() {
     throw new Error('Missing SMTP config in environment (EMAIL_HOST, EMAIL_USER, EMAIL_PASS).');
   }
 
-  // Try to resolve hostname (helps debug DNS -> IP)
   try {
     const ips = await dns.lookup(host, { all: true });
     console.log(`[sendEmail] Resolved ${host} -> ${ips.map(i=>i.address).join(', ')}`);
@@ -39,16 +38,14 @@ async function createTransport() {
       user,
       pass
     },
-    // Helpful for debugging; can be turned off in production
     logger: getEnv('EMAIL_DEBUG') === 'true',
     debug: getEnv('EMAIL_DEBUG') === 'true',
     pool: false,
-    connectionTimeout: Number(getEnv('EMAIL_CONN_TIMEOUT', 30000)), // 30s default
+    connectionTimeout: Number(getEnv('EMAIL_CONN_TIMEOUT', 30000)),
     greetingTimeout: Number(getEnv('EMAIL_GREET_TIMEOUT', 30000)),
     socketTimeout: Number(getEnv('EMAIL_SOCKET_TIMEOUT', 30000)),
     requireTLS: port === 587 || getEnv('EMAIL_REQUIRE_TLS') === 'true',
     tls: {
-      // If you need to accept self-signed certs (not recommended), set EMAIL_TLS_REJECT_UNAUTHORIZED=false
       rejectUnauthorized: getEnv('EMAIL_TLS_REJECT_UNAUTHORIZED') !== 'false'
     }
   });
@@ -57,7 +54,6 @@ async function createTransport() {
     console.error('[sendEmail transporter error]', err && err.message ? err.message : err);
   });
 
-  // verify but don't crash on failure
   try {
     await transporter.verify();
     console.log('[sendEmail] SMTP transporter verified');
@@ -92,8 +88,3 @@ async function sendMail({ to, subject, html, text }) {
 }
 
 module.exports = sendMail;
-
-// ✔ Signup → Email Verification
-// ✔ Resend verification
-// ✔ Forgot password
-// ✔ Reset password

@@ -20,9 +20,8 @@
 .dh-main-wrapper main {
   flex: 1;
   margin-top: 0px;
-   /* Slight gap between navbar and hero */
 }
-/* --- NAVIGATION --- */
+
 .dh-navbar {
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
@@ -40,13 +39,19 @@
 }
 
 .dh-logo {
-  font-size: 24px;
+  font-size: 32px; 
   font-weight: 800;
   color: var(--primary-dark);
   text-decoration: none;
+  letter-spacing: -0.5px; 
+  display: flex;
+  align-items: center;
 }
 
-.dh-logo span { color: var(--primary-green); }
+.dh-logo span {
+  color: var(--primary-green);
+  font-size: 32px; 
+}
 
 .dh-nav-links {
   display: flex;
@@ -61,7 +66,7 @@
   cursor: pointer;
   padding: 5px 15px;
   border-radius: 50px;
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(25, 127, 93, 0.1);
   transition: all 0.2s;
 }
 
@@ -90,7 +95,6 @@
 .dh-btn-login { color: var(--primary-dark); }
 .dh-btn-signup { background: var(--primary-green); color: white; }
 
-/* --- HERO & SEARCH --- */
 .dh-hero {
   padding: 60px 5% 80px;
   text-align: center;
@@ -126,7 +130,7 @@
   cursor: pointer;
 }
 
-/* --- PRODUCT CARDS --- */
+
 .dh-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -204,7 +208,7 @@
   cursor: pointer;
 }
 
-/* --- FOOTER --- */
+
 .dh-footer {
   margin-top: auto;
   background: var(--primary-dark);
@@ -227,11 +231,11 @@
   font-size: 14px;
   color: #94a3b8;
 }
-/* --- PROFILE SIDEBAR (RIGHT STICKY) --- */
+
 .dh-profile-sidebar {
   position: fixed;
   top: 0;
-  right: -400px; /* Hidden by default */
+  right: -400px; 
   width: 350px;
   height: 100vh;
   background: white;
@@ -243,7 +247,7 @@
 }
 
 .dh-profile-sidebar.open {
-  right: 0; /* Slide in */
+  right: 0; 
 }
 
 .dh-sidebar-overlay {
@@ -372,22 +376,22 @@
   background: #ffe4e6;
   transform: translateY(-2px);
 }
-/* Ensure the profile trigger feels clickable */
+
 .dh-profile-trigger {
   display: flex;
   align-items: center;
   gap: 12px;
-  cursor: pointer; /* Critical change */
+  cursor: pointer; 
   padding: 6px 14px;
   border-radius: 50px;
-  background: rgba(16, 185, 129, 0.05);
+  background: rgba(16, 185, 129, 0.12);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   border: 1px solid transparent;
 }
 
 .dh-profile-trigger:hover {
-  background: rgba(16, 185, 129, 0.12);
+  background: rgba(16, 185, 129, 0.20);
   border-color: rgba(16, 185, 129, 0.2);
   transform: translateY(-1px);
 }
@@ -421,8 +425,7 @@
   color: var(--primary-dark);
   font-size: 15px;
 }
-/* --- TRACKED PRODUCTS NAV ITEM --- */
-/* --- TRACKED PRODUCTS NAV ITEM --- */
+
 .dh-nav-item {
   text-decoration: none;
   color: var(--slate-600);
@@ -431,37 +434,33 @@
   transition: all 0.2s;
   display: flex;
   align-items: center;
-  gap: 10px; /* Increased gap slightly for larger icon */
+  gap: 10px; 
 }
 
 .dh-nav-item:hover {
   color: var(--primary-green);
 }
 
-/* Updated styling for the wishlist icon */
+
 .dh-wishlist-icon {
-  /* Changed from Red to a vibrant Amber/Gold color */
   color:black; 
-  /* font-size acts as a multiplier for the 'size' prop in FontAwesome */
   font-size: 1.2rem; 
   transition: transform 0.2s;
 }
 
 .dh-nav-item:hover .dh-wishlist-icon {
   transform: scale(1.1);
-  color: #d97706; /* Slightly darker gold on hover */
+  color: #10b981; 
 }
 
 .dh-wishlist-link {
   margin-right: 15px;
 }
-/* Container takes full width to match the hero content */
 .dh-search-container {
     margin-top: 20px;
     margin-bottom: 40px;
 }
 
-/* Force the search box to keep its original behavior */
 .dh-search-box {
     width: 100% !important;
     display: flex;

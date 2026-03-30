@@ -20,7 +20,7 @@ const scrapingcroma = async (name) => {
     const page = await browser.newPage();
 
     await page.goto(`https://www.croma.com/searchB?q=${name}%3Arelevance&text=${name}`, {
-        waitUntil: 'networkidle2'
+        waitUntil: 'domcontentloaded'
     });
 
     await page.waitForSelector('li.product-item');
@@ -45,7 +45,7 @@ const scrapingcroma = async (name) => {
 
             results.push({ title, price, image, link ,website : "Croma"});
 
-            if (results.length == 3) { break; }
+            if (results.length == 4) { break; }
         }
         return results;
     })

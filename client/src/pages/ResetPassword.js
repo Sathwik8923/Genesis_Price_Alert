@@ -17,13 +17,13 @@ function ResetPassword() {
     const handleReset = async (e) => {
         e.preventDefault();
         
-        // Basic frontend validation
+        
         if (password.length < 6) {
             return handleError("Password must be at least 6 characters long");
         }
 
         try {
-            // Ensure this hits your backend port (usually 8000)
+            
             const response = await fetch('http://localhost:8000/reset', {
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' },
@@ -34,11 +34,10 @@ function ResetPassword() {
             
             if (result.success) {
                 handleSuccess(result.message);
-                // Redirect to login after success
+                
                 setTimeout(() => navigate('/login'), 2000);
             } else {
-                // This will display "New password cannot be the same as old password" 
-                // if you updated your backend logic as discussed.
+              
                 handleError(result.message);
             }
         } catch (err) {
@@ -87,7 +86,6 @@ function ResetPassword() {
                     </button>
                 </form>
 
-                {/* Centered Back to Login Link */}
                 <div className="mt-8 flex justify-center w-full">
                     <Link 
                         to="/login" 

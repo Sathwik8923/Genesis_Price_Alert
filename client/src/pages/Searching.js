@@ -70,7 +70,7 @@ const Searching = () => {
 
     const handleClick = async () => {
         if (!name.trim()) {
-            setErrorMsg('Please enter something to search!');
+            setErrorMsg('Please enter something to search !');
             return;
         }
         setErrorMsg('');
