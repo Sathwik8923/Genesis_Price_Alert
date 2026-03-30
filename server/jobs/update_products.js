@@ -13,8 +13,12 @@ const updating_products = async ()=>{
         if (newPrice !== product.currentprice) {
             product.currentprice = newPrice;
             product.lastcheckedAt = new Date();
-            await product.save();
         }
+        product.priceHistory.push({ price: newPrice, date: new Date() });
+        if (product.priceHistory.length > 90) {
+            product.priceHistory = product.priceHistory.slice(-90);
+        }
+        await product.save();
     }
 }
 
