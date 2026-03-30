@@ -9,8 +9,9 @@ const updating_products = async ()=>{
             product.website
         )
         if (!newPrice) continue;
-        if(newPrice<product.currentprice){
-            product.currentprice=newPrice;
+        // Always update price (up or down) so alert history is accurate
+        if (newPrice !== product.currentprice) {
+            product.currentprice = newPrice;
             product.lastcheckedAt = new Date();
             await product.save();
         }

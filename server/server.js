@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const rateLimit = require('express-rate-limit');  // ✅ rate limiter
 const scrapeProduct = require('./webscrape');
 const scrapingcroma = require('./scrapings/scrape_croma');
 const scrapingflipkart = require('./scrapings/scrape_flipcart');
@@ -33,6 +34,13 @@ connectDB();
 app.use(express.json());
 app.use(cors());
 
+// ✅ Rate limiter: max 10 searches per IP per minute
+const searchLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 10,
+    message: { error: "Too many search requests. Please wait a moment and try again." }
+});
+
 const safeScrape = async (scraper, name) => {
     try {
         const result = await scraper(name);
@@ -44,12 +52,12 @@ const safeScrape = async (scraper, name) => {
 };
 
 
-app.post("/search", async (req, res) => {
+app.post("/search", searchLimiter, async (req, res) => {
     try {
         console.log(req.body.name);
         const oname = req.body.name;
-        const cname = oname.replace(" ", "%20");
-        const fname = oname.replace(" ", "+");
+        const cname = encodeURIComponent(oname);   // ✅ encodes ALL spaces and special chars
+        const fname = oname.replace(/\s+/g, '+');  // ✅ replaces ALL spaces for Flipkart
         const data_a = await safeScrape(scrapeProduct, fname);
         const data_c = await safeScrape(scrapingcroma, cname);
         const data_f = await safeScrape(scrapingflipkart, cname);
