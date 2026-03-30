@@ -162,6 +162,16 @@ app.delete("/tracked/:id", authMiddleware, async (req, res) => {
     }
 });
 
+app.get('/product/:id/history', authMiddleware, async (req, res) => {
+    try {
+        const product = await Products.findById(req.params.id).select('priceHistory pname');
+        if (!product) return res.status(404).json({ message: 'Product not found' });
+        res.json(product);
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to fetch price history' });
+    }
+});
+
 app.get('/price-alerts', authMiddleware, async (req, res) => {
     try {
         const alerts = await PriceAlertHistory
