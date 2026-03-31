@@ -162,6 +162,38 @@ app.delete("/tracked/:id", authMiddleware, async (req, res) => {
     }
 });
 
+// ✅ Pause / Resume tracking
+app.patch("/tracked/:id/toggle", authMiddleware, async (req, res) => {
+    try {
+        const tp = await Trackedproducts.findOne({ _id: req.params.id, uid: req.user.userId });
+        if (!tp) return res.status(404).json({ message: "Item not found" });
+        tp.isActive = !tp.isActive;
+        await tp.save();
+        res.json({ message: tp.isActive ? "Tracking resumed" : "Tracking paused", isActive: tp.isActive });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Edit target price
+app.patch("/tracked/:id/target", authMiddleware, async (req, res) => {
+    try {
+        const { tprice } = req.body;
+        if (!tprice || isNaN(tprice) || Number(tprice) <= 0) {
+            return res.status(400).json({ message: "Invalid target price" });
+        }
+        const tp = await Trackedproducts.findOne({ _id: req.params.id, uid: req.user.userId });
+        if (!tp) return res.status(404).json({ message: "Item not found" });
+        tp.tprice = Number(tprice);
+        tp.lastNotifiedPrice = null; // reset so it can notify at new target
+        await tp.save();
+        res.json({ message: "Target price updated", tprice: tp.tprice });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Returns price history for a specific product (for charts)
 app.get('/product/:id/history', authMiddleware, async (req, res) => {
     try {
         const product = await Products.findById(req.params.id).select('priceHistory pname');
