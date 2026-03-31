@@ -1,7 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faArrowLeft, faBell, faCalendarAlt, faHistory } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faArrowLeft, faBell, faCalendarAlt, faHistory, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+
+// ✅ Shows % drop between old and new price
+const DropBadge = ({ oldPrice, newPrice }) => {
+    if (!oldPrice || !newPrice || oldPrice <= newPrice) return null;
+    const pct = Math.round(((oldPrice - newPrice) / oldPrice) * 100);
+    if (pct <= 0) return null;
+    return (
+        <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">
+            <FontAwesomeIcon icon={faArrowDown} className="text-[8px]" />
+            {pct}% drop
+        </span>
+    );
+};
 
 const PriceAlerts = () => {
   const [alerts, setAlerts] = useState([]);
@@ -82,7 +95,7 @@ const PriceAlerts = () => {
                     <h3 className="text-[#0f172a] font-[700] text-xl  mb-1 line-clamp-1">
                       {alert.pid?.pname || "Product Alert"}
                     </h3>
-                    <div className="flex items-center gap-4 text-slate-500 text-sm font-bold">
+                    <div className="flex items-center gap-3 text-slate-500 text-sm font-bold flex-wrap">
                       <span className="flex items-center gap-1">
                         <FontAwesomeIcon icon={faCalendarAlt} className="text-xs text-slate-400" />
                         {new Date(alert.alertedAt).toLocaleDateString()}
@@ -90,16 +103,23 @@ const PriceAlerts = () => {
                       <span className="bg-emerald-100 text-[#065f46] px-2 py-0.5 rounded text-[10px] uppercase tracking-widest font-black">
                         {alert.website || "Store"}
                       </span>
+                      {/* ✅ Drop % badge */}
+                      <DropBadge oldPrice={alert.oldPrice} newPrice={alert.newPrice} />
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-8 mt-4 md:mt-0 w-full md:w-auto justify-between border-t md:border-t-0 border-slate-100 pt-4 md:pt-0">
                   <div className="flex flex-col items-end">
-                    <span className="text-slate-400 text-[10px] uppercase font-black tracking-widest">New Price</span>
-                    <span className="text-3xl font-[700] text-[#10b981]">
-                      ₹{alert.newPrice}
-                    </span>
+                    <span className="text-slate-400 text-[10px] uppercase font-black tracking-widest">Was → Now</span>
+                    <div className="flex items-baseline gap-2">
+                      {alert.oldPrice && (
+                        <span className="text-slate-400 line-through text-base font-bold">₹{alert.oldPrice}</span>
+                      )}
+                      <span className="text-3xl font-[700] text-[#10b981]">
+                        ₹{alert.newPrice}
+                      </span>
+                    </div>
                   </div>
                   <Link to="/tracked" className="bg-[#0f172a] hover:bg-black text-white px-6 py-3 rounded-xl font-[700]  transition-all flex items-center gap-2 no-underline">
                     View <FontAwesomeIcon icon={faHistory} className="text-xs" />
