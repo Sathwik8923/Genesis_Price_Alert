@@ -10,6 +10,7 @@ const authMiddleware = require('./middleware/auth')
 const Products = require('./models/Products');
 const Trackedproducts = require('./models/Trackedproducts');
 const PriceAlertHistory = require('./models/PriceAlertHistory');
+const updateUserPrices = require('./jobs/update_users_price');
 const {
     signup,
     login,

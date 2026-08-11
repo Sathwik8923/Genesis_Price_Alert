@@ -22,7 +22,7 @@ function EmailVerification() {
 
             try {
                 
-                const response = await fetch(`http://localhost:8000/verify?token=${token}&email=${email}`);
+                const response = await fetch(`/verify?token=${token}&email=${email}`);
                 const result = await response.json();
 
                 setTimeout(() => {
@@ -47,7 +47,7 @@ function EmailVerification() {
     const handleResend = async () => {
         setIsResending(true);
         try {
-            const response = await fetch('http://localhost:8000/resend', {
+            const response = await fetch('/resend', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
