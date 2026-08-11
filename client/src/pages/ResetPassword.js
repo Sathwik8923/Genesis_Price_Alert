@@ -1,3 +1,4 @@
+import { API_BASE } from "../api";
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -24,7 +25,7 @@ function ResetPassword() {
 
         try {
             
-            const response = await fetch('/reset', {
+            const response = await fetch(`${API_BASE}/reset`, {
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, token, password })

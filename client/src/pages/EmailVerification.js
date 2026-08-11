@@ -1,3 +1,4 @@
+import { API_BASE } from "../api";
 import React, { useEffect, useState, useRef } from 'react'; 
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -22,7 +23,7 @@ function EmailVerification() {
 
             try {
                 
-                const response = await fetch(`/verify?token=${token}&email=${email}`);
+                const response = await fetch(`${API_BASE}/verify?token=${token}&email=${email}`);
                 const result = await response.json();
 
                 setTimeout(() => {
@@ -47,7 +48,7 @@ function EmailVerification() {
     const handleResend = async () => {
         setIsResending(true);
         try {
-            const response = await fetch('/resend', {
+            const response = await fetch(`${API_BASE}/resend`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })

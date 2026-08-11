@@ -1,3 +1,4 @@
+import { API_BASE } from "../api";
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -12,7 +13,7 @@ function ForgotPassword() {
         e.preventDefault();
         if (!email) return handleError('Email is required');
         try {
-            const response = await fetch('/forgot', {
+            const response = await fetch(`${API_BASE}/forgot`, {
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })

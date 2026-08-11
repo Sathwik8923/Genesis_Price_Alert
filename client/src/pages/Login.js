@@ -1,3 +1,4 @@
+import { API_BASE } from "../api";
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -57,7 +58,7 @@ function Login() {
     }
     const handleResendLink = async () => {
         try {
-            const response = await fetch('/resend', {
+            const response = await fetch(`${API_BASE}/resend`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
