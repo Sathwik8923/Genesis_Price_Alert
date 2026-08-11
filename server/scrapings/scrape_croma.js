@@ -45,7 +45,7 @@ const scrapingcroma = async (name) => {
 
             results.push({ title, price, image, link ,website : "Croma"});
 
-            if (results.length == 5) { break; }
+            if (results.length == 4) { break; }
         }
         return results;
     })

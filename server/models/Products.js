@@ -25,6 +25,13 @@ const Productschema = new mongoose.Schema({
     lastcheckedAt:{
         type:Date,
         default:null
+    },
+    priceHistory: {
+        type: [{
+            price: { type: Number, required: true },
+            date:  { type: Date,   default: Date.now }
+        }],
+        default: []
     }
 })
 

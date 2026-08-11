@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const rateLimit = require('express-rate-limit');  // ✅ rate limiter
 const scrapeProduct = require('./webscrape');
 const scrapingcroma = require('./scrapings/scrape_croma');
 const scrapingflipkart = require('./scrapings/scrape_flipcart');
@@ -33,6 +34,13 @@ connectDB();
 app.use(express.json());
 app.use(cors());
 
+// ✅ Rate limiter: max 10 searches per IP per minute
+const searchLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 10,
+    message: { error: "Too many search requests. Please wait a moment and try again." }
+});
+
 const safeScrape = async (scraper, name) => {
     try {
         const result = await scraper(name);
@@ -44,12 +52,12 @@ const safeScrape = async (scraper, name) => {
 };
 
 
-app.post("/search", async (req, res) => {
+app.post("/search", searchLimiter, async (req, res) => {
     try {
         console.log(req.body.name);
         const oname = req.body.name;
-        const cname = oname.replace(" ", "%20");
-        const fname = oname.replace(" ", "+");
+        const cname = encodeURIComponent(oname);   // ✅ encodes ALL spaces and special chars
+        const fname = oname.replace(/\s+/g, '+');  // ✅ replaces ALL spaces for Flipkart
         const data_a = await safeScrape(scrapeProduct, fname);
         const data_c = await safeScrape(scrapingcroma, cname);
         const data_f = await safeScrape(scrapingflipkart, cname);
@@ -154,6 +162,48 @@ app.delete("/tracked/:id", authMiddleware, async (req, res) => {
     }
 });
 
+// ✅ Pause / Resume tracking
+app.patch("/tracked/:id/toggle", authMiddleware, async (req, res) => {
+    try {
+        const tp = await Trackedproducts.findOne({ _id: req.params.id, uid: req.user.userId });
+        if (!tp) return res.status(404).json({ message: "Item not found" });
+        tp.isActive = !tp.isActive;
+        await tp.save();
+        res.json({ message: tp.isActive ? "Tracking resumed" : "Tracking paused", isActive: tp.isActive });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Edit target price
+app.patch("/tracked/:id/target", authMiddleware, async (req, res) => {
+    try {
+        const { tprice } = req.body;
+        if (!tprice || isNaN(tprice) || Number(tprice) <= 0) {
+            return res.status(400).json({ message: "Invalid target price" });
+        }
+        const tp = await Trackedproducts.findOne({ _id: req.params.id, uid: req.user.userId });
+        if (!tp) return res.status(404).json({ message: "Item not found" });
+        tp.tprice = Number(tprice);
+        tp.lastNotifiedPrice = null; // reset so it can notify at new target
+        await tp.save();
+        res.json({ message: "Target price updated", tprice: tp.tprice });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Returns price history for a specific product (for charts)
+app.get('/product/:id/history', authMiddleware, async (req, res) => {
+    try {
+        const product = await Products.findById(req.params.id).select('priceHistory pname');
+        if (!product) return res.status(404).json({ message: 'Product not found' });
+        res.json(product);
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to fetch price history' });
+    }
+});
+
 app.get('/price-alerts', authMiddleware, async (req, res) => {
     try {
         const alerts = await PriceAlertHistory
@@ -178,4 +228,5 @@ app.post("/reset", resetPasswordValidation, resetPassword);
 
 require('./jobs/cron');
 
-app.listen(8000, () => console.log("Server running on 8000"));
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => console.log("Listening to port", PORT));
