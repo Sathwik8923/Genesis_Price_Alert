@@ -1,3 +1,4 @@
+import { API_BASE } from "../api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -76,7 +77,7 @@ const Searching = () => {
         setErrorMsg('');
         setIsPending(true);
         try {
-            const response = await fetch("/search", {
+            const response = await fetch(`${API_BASE}/search`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name })
@@ -115,7 +116,7 @@ const Searching = () => {
         const token = localStorage.getItem("token");
 
         try {
-            const responseTrack = await fetch("/track", {
+            const responseTrack = await fetch(`${API_BASE}/track`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

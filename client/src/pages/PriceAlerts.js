@@ -1,3 +1,4 @@
+import { API_BASE } from "../api";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -22,7 +23,7 @@ const PriceAlerts = () => {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    fetch("/price-alerts", {
+    fetch(`${API_BASE}/price-alerts`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
