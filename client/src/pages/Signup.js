@@ -28,7 +28,7 @@ function Signup() {
             return handleError('Name, Email and Password are required')
         }
         try {
-            const response = await fetch('/signup', {
+            const response = await fetch(`${API_BASE}/signup`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

@@ -20,7 +20,7 @@ const PriceHistoryModal = ({ product, targetPrice, onClose }) => {
     const token = localStorage.getItem("token");
 
     useEffect(() => {
-        fetch(`/product/${product._id}/history`, {
+        fetch(`${API_BASE}/product/${product._id}/history`, {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(res => res.json())
@@ -201,7 +201,7 @@ const Tracked = () => {
     const token = localStorage.getItem("token");
 
     useEffect(() => {
-        fetch("/tracked", {
+        fetch(`${API_BASE}/tracked`, {
             method: "GET",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
         })
@@ -211,7 +211,7 @@ const Tracked = () => {
     }, [token]);
 
     const handleDelete = (trackedId) => {
-        fetch(`/tracked/${trackedId}`, { method: "DELETE", headers: { "Authorization": `Bearer ${token}` } })
+        fetch(`${API_BASE}/tracked/${trackedId}`, { method: "DELETE", headers: { "Authorization": `Bearer ${token}` } })
             .then(res => res.json())
             .then(() => setDetails(prev => prev.filter(item => item._id !== trackedId)))
             .catch(err => console.log(err));
@@ -220,7 +220,7 @@ const Tracked = () => {
     // ✅ Pause / Resume
     const handleToggle = async (trackedId) => {
         try {
-            const res = await fetch(`/tracked/${trackedId}/toggle`, {
+            const res = await fetch(`${API_BASE}/tracked/${trackedId}/toggle`, {
                 method: "PATCH",
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -239,7 +239,7 @@ const Tracked = () => {
         const item = editModal;
         setEditModal(null);
         try {
-            const res = await fetch(`/tracked/${item._id}/target`, {
+            const res = await fetch(`${API_BASE}/tracked/${item._id}/target`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify({ tprice: newTarget })
